@@ -3,31 +3,26 @@
 A learning tool for English grammar corrections and beginner-friendly explanations.
 The Streamlit interface calls Person 1's `analyze_text()` backend directly.
 
-## Run locally on macOS
+## Run locally
 
-Use Python 3.10 or later. Open Terminal and run:
+Use Python 3.10 or later. After downloading the repository as .zip and decompressing, open Terminal and run:
 
 ```bash
-cd AILT9019_Project
+cd AILT9019_Project-main
+cd AILT9019_Project-main
 python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install -r requirements.txt
 cp .env.example .env
 ```
 
-Open `.env` in a text editor and fill in your own provider settings:
+Open `.env` in a text editor and fill in provider settings:
 
 ```dotenv
 OPENAI_API_BASE=https://your-provider-endpoint/v1
 OPENAI_API_KEY=your-own-api-key
 OPENAI_MODEL=your-provider-model-name
 ```
-
-Use an OpenAI-compatible endpoint and a model available to your account.
-The example endpoint above is a placeholder. See `.env.example` for configuration examples.
-Keep `.env` private; it is excluded from Git. Do not put credentials in `app.py`.
-If `.env` already exists, edit it rather than copying over it.
-
 Start the application:
 
 ```bash
