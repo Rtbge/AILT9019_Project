@@ -1,6 +1,4 @@
-# Person 2 verification — 26 October 2026
-
-## Verified result
+## Test Case Results
 
 Command: `python -m pytest -q -p no:cacheprovider`
 
@@ -37,4 +35,4 @@ Successful live grammar analysis remains unverified. After provider access is en
 
 ## Scope and attribution
 
-Person 2 added the Streamlit UI, dependency, offline UI integration tests, setup documentation, and handoff evidence. Person 1's analyzer.py and backend tests are included unchanged to make the package runnable. No CEFR dataset or additional language support has been added.
+Added the Streamlit UI, dependency, offline UI integration tests, setup documentation, and handoff evidence. Analyzer.py and backend tests are included unchanged to make the package runnable. No CEFR dataset or additional language support has been added.
