@@ -36,8 +36,15 @@ Successful live grammar analysis remains unverified. After provider access is en
 ## Live Testing Results
 
 | Scenario | Cases | Results |
-| --- | --- |
-| 1 mistake in sentence | "Our school have a busy elevator." | Mistake detected and corrected |
+| --- | --- | --- |
+| 1 mistake in sentence | "Our school have a busy elevator." | Mistake detected, corrected and epxlained |
+| Empty sentence | "" | Detected locally without sending any API requests |
+| Non-English entered| "Donde Estas?" | Detected by model and corrected user to use English instead of Spanish|
+| More than 1000 characters entered | Lots of "How are you?" | Detected by locally and cannot enter more than 1000 characters in the text box |
+| 3 mistakes in sentence| "We school have an busy elevator." | All mistakes detected, corrected and explained |
+| Only numbers entered | "3.1415926 65536" | Detected locally and prompts user to enter English characters |
+| Incomprehensible text | "epvqnwuvv9sduibqwo" | "This text is not a recognizable English word or sentence, so there are no English grammar mistakes to correct.
+Normal English grammar rules cannot be applied because the text does not contain clear English words or sentence structure." |
 
 ## Scope and attribution
 
