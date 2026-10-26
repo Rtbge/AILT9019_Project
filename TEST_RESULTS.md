@@ -33,6 +33,12 @@ The user subsequently submitted identity verification and the console shows it a
 
 Successful live grammar analysis remains unverified. After provider access is enabled, run one short manual analysis before recording or claiming an end-to-end live demonstration.
 
+## Live Testing Results
+
+| Scenario | Cases | Results |
+| --- | --- |
+| 1 mistake in sentence | "Our school have a busy elevator." | Mistake detected and corrected |
+
 ## Scope and attribution
 
 Added the Streamlit UI, dependency, offline UI integration tests, setup documentation, and handoff evidence. Analyzer.py and backend tests are included unchanged to make the package runnable. No CEFR dataset or additional language support has been added.
