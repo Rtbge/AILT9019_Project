@@ -1,4 +1,10 @@
-"""Offline integration checks: real Streamlit UI and backend, simulated provider."""
+"""Offline integration checks: real Streamlit UI and backend, simulated provider.
+
+These tests use the real app.py and the real analyzer.py, but replace the
+remote AI provider with a simulated response. They establish the
+input -> backend -> interface connection; they do NOT measure live model
+accuracy. Run live checks separately with `pytest test_backend.py --run-live`.
+"""
 
 import json
 
@@ -17,15 +23,15 @@ def submit(app, text):
     return app.button[0].click().run()
 
 
-def provider_response(corrected, errors):
+def provider_response(corrected, errors, vocabulary=None, cefr="A1", cefr_note="Simple sentence."):
     response = MagicMock()
     response.choices[0].message.content = json.dumps({
         "corrected_text": corrected,
         "errors": errors,
         "grammar_explanations": ["Use the verb form that agrees with the subject."],
-        "vocabulary": [],
-        "cefr_estimate": "A1",
-        "cefr_note": "Simple sentence.",
+        "vocabulary": vocabulary or [],
+        "cefr_estimate": cefr,
+        "cefr_note": cefr_note,
     })
     return response
 
@@ -43,7 +49,8 @@ def test_correction_flows_through_real_backend(monkeypatch):
         assert "She goes to school every day." in values
         assert "Use goes with the singular subject she." in values
         assert client.return_value.chat.completions.create.call_count == 1
-        assert "CEFR Estimate" not in [item.value for item in app.subheader]
+        # The final frontend exposes the CEFR feedback returned by the backend.
+        assert "CEFR Estimate" in [item.value for item in app.subheader]
         # Invalid resubmission must not leave the old correction visible.
         submit(app, "   ")
         assert app.warning
@@ -166,3 +173,86 @@ def test_input_limit_and_long_paragraph(monkeypatch):
         assert client.return_value.chat.completions.create.call_count == 2
         last_request = client.return_value.chat.completions.create.call_args.kwargs
         assert "a" * 1001 not in last_request["messages"][1]["content"]
+
+
+# ---------------------------------------------------------------------------
+# Final frontend additions (Person 2): vocabulary, CEFR, use cases, refusals
+# ---------------------------------------------------------------------------
+
+
+def test_vocabulary_and_cefr_feedback_are_displayed(monkeypatch):
+    monkeypatch.setenv("OPENAI_API_KEY", "offline-test-key")
+    with patch("analyzer.OpenAI") as client:
+        client.return_value.chat.completions.create.return_value = provider_response(
+            "She goes to school every day.",
+            [{"original": "go", "corrected": "goes", "explanation": "Use goes with she."}],
+            vocabulary=[{"word": "school", "meaning": "a place where children go to learn"}],
+            cefr="B1",
+            cefr_note="Suitable for B1 learners. Not an official CEFR assessment.",
+        )
+        app = submit(launch(), "She go to school every day.")
+        assert not app.exception
+        values = [item.value for item in app.text]
+        assert "school — a place where children go to learn" in values
+        assert "CEFR Estimate" in [item.value for item in app.subheader]
+        assert "B1" in [item.value for item in app.metric]
+        assert any("official CEFR assessment" in item.value for item in app.info)
+
+
+def test_optional_cefr_level_is_forwarded_to_backend(monkeypatch):
+    monkeypatch.setenv("OPENAI_API_KEY", "offline-test-key")
+    result = {
+        "success": True,
+        "original_text": "I like reading.",
+        "corrected_text": "I like reading.",
+        "errors": [],
+        "grammar_explanations": ["Your sentence is correct."],
+        "vocabulary": [],
+        "cefr_estimate": "A2",
+        "cefr_note": "Not an official CEFR assessment.",
+        "message": "No mistakes.",
+    }
+    with patch("analyzer.analyze_text", return_value=result) as mocked:
+        app = launch()
+        app.selectbox[0].set_value("B1")
+        app = submit(app, "I like reading.")
+        assert not app.exception
+        assert mocked.call_args.kwargs.get("cefr_level") == "B1"
+
+
+def test_two_use_cases_are_recorded_with_the_result(monkeypatch):
+    monkeypatch.setenv("OPENAI_API_KEY", "offline-test-key")
+    with patch("analyzer.OpenAI") as client:
+        client.return_value.chat.completions.create.return_value = provider_response(
+            "She goes to school every day.",
+            [{"original": "go", "corrected": "goes", "explanation": "Use goes with she."}],
+        )
+        app = launch()
+        app.radio[0].set_value("Check my own writing")
+        app.run()
+        app = submit(app, "She go to school every day.")
+        assert not app.exception
+        assert app.session_state["use_case"] == "Check my own writing"
+
+
+def test_refusal_is_explained_not_shown_as_a_crash():
+    refusal = "The input does not appear to be English. This tool only analyses English text."
+    with patch("analyzer.analyze_text", return_value={"success": False, "message": refusal}):
+        app = submit(launch(), "She go to school.")
+        assert not app.exception
+        assert app.warning
+        assert "not written mainly in English" in app.warning[0].value
+        assert not app.error
+        assert not app.text
+
+
+def test_offline_demo_is_labelled_and_does_not_call_provider(monkeypatch):
+    monkeypatch.setenv("AILT9019_OFFLINE_DEMO", "1")
+    with patch("analyzer.OpenAI") as client:
+        app = launch()
+        assert any("OFFLINE DEMO MODE" in item.value for item in app.warning)
+        app = submit(app, "She go to school every day.")
+        assert not app.exception
+        assert "She goes to school every day." in [item.value for item in app.text]
+        assert "school — a place where children go to learn" in [item.value for item in app.text]
+        client.assert_not_called()
