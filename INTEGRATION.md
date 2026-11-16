@@ -1,6 +1,6 @@
 # INTEGRATION.md – Streamlit Frontend Integration Guide
 
-This document tells Person 2 exactly how to connect the Streamlit frontend
+This document explains how to connect the Streamlit frontend
 to the grammar-analysis backend.
 
 ---

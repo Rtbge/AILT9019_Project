@@ -106,17 +106,19 @@ CORRECT_RESPONSE = json.dumps({
     "cefr_note": "Present continuous with a simple subject is typical of A1–A2 level.",
 })
 
+NON_LATIN_VERB = "\N{CJK UNIFIED IDEOGRAPH-53BB}"
 MIXED_LANGUAGE_RESPONSE = json.dumps({
     "corrected_text": "I want to go to the market.",
     "errors": [
         {
-            "original": "I want to 去 market",
+            "original": f"I want to {NON_LATIN_VERB} market",
             "corrected": "I want to go to the market",
-            "explanation": "'去' is Chinese for 'go'. In English, use 'go to' instead.",
+            "explanation": f"'{NON_LATIN_VERB}' is Chinese for 'go'. In English, use 'go to' instead.",
         }
     ],
     "grammar_explanations": [
-        "The text contains a Chinese character (去) mixed into an English sentence. Use the English equivalent 'go to'.",
+        f"The text contains a Chinese character ({NON_LATIN_VERB}) mixed into an English sentence. "
+        "Use the English equivalent 'go to'.",
     ],
     "vocabulary": [
         {"word": "market", "meaning": "a place where goods are bought and sold"},
@@ -235,14 +237,14 @@ class TestAnalyzeTextMocked:
         """
         Text that is primarily non-English (majority of alphabetic
         characters in a non-Latin script) is rejected before the API
-        call.  'I want to 去 market' has 15 Latin letters vs 1 CJK
+        call. The mixed-language fixture has 15 Latin letters vs one CJK
         character — this passes because < 30 % non-Latin.  But a
         sentence where non-Latin letters dominate must be rejected.
         """
         from analyzer import analyze_text
 
         # Mostly Chinese characters — should be rejected
-        result = analyze_text("我々要去 the market 买东西")
+        result = analyze_text("\u6211\u3005\u8981\u53bb the market \u4e70\u4e1c\u897f")
         assert result["success"] is False
         assert "does not appear to be english" in result["message"].lower()
 
@@ -250,7 +252,7 @@ class TestAnalyzeTextMocked:
     def test_pure_non_english_rejected(self):
         from analyzer import analyze_text
 
-        result = analyze_text("这是一个测试句子")
+        result = analyze_text("\u8fd9\u662f\u4e00\u4e2a\u6d4b\u8bd5\u53e5\u5b50")
         assert result["success"] is False
         assert "does not appear to be english" in result["message"].lower()
 
@@ -265,7 +267,7 @@ class TestAnalyzeTextMocked:
         """
         from analyzer import analyze_text
 
-        result = analyze_text("I want to 去 market.")
+        result = analyze_text(f"I want to {NON_LATIN_VERB} market.")
         # 15 Latin letters vs 1 CJK character — well under 30 %
         assert result["success"] is True
 
@@ -391,10 +393,10 @@ class TestAnalyzeTextMocked:
 
     # -- 18. Cyrillic / Arabic / other scripts rejected --------------------
     @pytest.mark.parametrize("text", [
-        "Это предложение на русском языке",
-        "هذه جملة باللغة العربية",
-        "これは日本語のテストです",
-    ])
+        "\u042d\u0442\u043e \u043f\u0440\u0435\u0434\u043b\u043e\u0436\u0435\u043d\u0438\u0435 \u043d\u0430 \u0440\u0443\u0441\u0441\u043a\u043e\u043c \u044f\u0437\u044b\u043a\u0435",
+        "\u0647\u0630\u0647 \u062c\u0645\u0644\u0629 \u0628\u0627\u0644\u0644\u063a\u0629 \u0627\u0644\u0639\u0631\u0628\u064a\u0629",
+        "\u3053\u308c\u306f\u65e5\u672c\u8a9e\u306e\u30c6\u30b9\u30c8\u3067\u3059",
+    ], ids=["cyrillic", "arabic", "japanese"])
     def test_various_non_latin_scripts_rejected(self, text):
         from analyzer import analyze_text
 

@@ -4,8 +4,8 @@ A learning tool for English grammar corrections, beginner-friendly explanations,
 vocabulary notes and an approximate CEFR difficulty estimate. The Streamlit
 interface (`app.py`) calls the team's `analyze_text()` backend (`analyzer.py`).
 
-Public project webpage: `docs/index.html` (published with GitHub Pages at
-`https://rtbge.github.io/AILT9019_Project/`).
+The project webpage source is [docs/index.html](docs/index.html). See the
+[frontend and webpage handoff](FRONTEND_AND_WEBPAGE_HANDOFF.md) for publishing.
 
 ## Run locally
 
@@ -17,7 +17,7 @@ cd AILT9019_Project-main
 python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install -r requirements.txt
-cp .env.example .env
+cp -n .env.example .env
 ```
 
 Open `.env` in a text editor and fill in your own provider settings:
@@ -68,16 +68,15 @@ appear as readable error messages rather than raw provider diagnostics.
 
 ### Offline demo mode (clearly labelled)
 
-If the AI provider is unavailable, the interface can be shown against a fixed
-sample response for demonstration and screenshot evidence:
+The offline demo opens the interface with fixed examples for both tasks:
 
 ```bash
 AILT9019_OFFLINE_DEMO=1 python -m streamlit run app.py
 ```
 
-A persistent banner states that the page is showing a **fixed sample response,
-not a live AI model result**. Offline demo output must never be described as
-live inference in reports, on the webpage or in recordings.
+Choose a task and select **Show example feedback**. The input is fixed and
+the banner explains that **no AI request is made**. Start the standard app to
+analyse your own text.
 
 ## Current scope and limitations
 
@@ -121,16 +120,15 @@ python -m pytest test_backend.py -v --run-live
 ```
 
 Live tests require valid API credentials and can incur provider charges.
-See `INTEGRATION.md` for the backend return format,
-`TEST_RESULTS.md` for the recorded test run and `PERSON2_NOTES.md` for the
-frontend handoff.
+See [the integration guide](INTEGRATION.md) for the backend return format and
+[the test record](TEST_RESULTS.md) for the recorded test run.
 
-## Person 2 delivery status
+## Frontend verification
 
 Final offline validation: **42 passed, 1 skipped** (`python -m pytest -q
--p no:cacheprovider`, 14 November 2026, Python 3.14 / Streamlit 1.66.1).
-Person 2 deliverables: updated `app.py`, offline UI tests, the public webpage
-in `docs/`, interface screenshots and usability evidence in `docs/evidence/`.
+-p no:cacheprovider`, 16 November 2026, Python 3.14 / Streamlit 1.66.1).
+The [usability walkthrough](docs/evidence/USABILITY_EVIDENCE.md) records the
+interface examples and failure cases reproduced in a local browser.
 
 **Live inference is still unverified.** A call made on 14 November 2026 with a
 configured key returned HTTP 403 `AccessDenied.Unpurchased` ("Access to model

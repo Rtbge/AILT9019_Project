@@ -71,7 +71,7 @@ def test_correct_sentence(monkeypatch):
 def test_invalid_inputs_do_not_call_provider():
     with patch("analyzer.OpenAI") as client:
         app = launch()
-        for text in ["", "   ", "a", "12345", "!!!", "这是一个中文句子。"]:
+        for text in ["", "   ", "a", "12345", "!!!", "\u8fd9\u662f\u4e00\u4e2a\u4e2d\u6587\u53e5\u5b50\u3002"]:
             submit(app, text)
             assert not app.exception
             assert app.warning or app.error
@@ -138,11 +138,15 @@ def test_multiple_corrections_and_literal_text(monkeypatch):
         )
         app = submit(launch(), "She go to school. They was late. <b>example</b>")
         assert not app.exception
-        assert "2 grammar issues found." in app.info[0].value
+        assert any("2 grammar issues found." in item.value for item in app.info)
         values = [element.value for element in app.text]
         assert "Use goes with she." in values
         assert "Use were with they." in values
         assert "She goes to school. They were late. <b>example</b>" in values
+        diff = next(item.value for item in app.markdown if "<del" in item.value)
+        assert "&lt;b&gt;example&lt;/b&gt;" in diff
+        assert "school." in diff
+        assert chr(92) + "." not in diff
         assert app.session_state["analysis"]["success"]
         # A rerun must preserve feedback and must not send another API request.
         app.run()
@@ -176,7 +180,7 @@ def test_input_limit_and_long_paragraph(monkeypatch):
 
 
 # ---------------------------------------------------------------------------
-# Final frontend additions (Person 2): vocabulary, CEFR, use cases, refusals
+# Vocabulary, CEFR, use cases and refusals
 # ---------------------------------------------------------------------------
 
 
@@ -220,19 +224,27 @@ def test_optional_cefr_level_is_forwarded_to_backend(monkeypatch):
         assert mocked.call_args.kwargs.get("cefr_level") == "B1"
 
 
-def test_two_use_cases_are_recorded_with_the_result(monkeypatch):
+def test_two_use_cases_prioritise_different_results(monkeypatch):
     monkeypatch.setenv("OPENAI_API_KEY", "offline-test-key")
     with patch("analyzer.OpenAI") as client:
         client.return_value.chat.completions.create.return_value = provider_response(
             "She goes to school every day.",
             [{"original": "go", "corrected": "goes", "explanation": "Use goes with she."}],
         )
-        app = launch()
+        app = submit(launch(), "She go to school every day.")
+        assert not app.exception
+        assert app.session_state["use_case"] == "Understand a text I found"
+        headings = [item.value for item in app.subheader]
+        assert headings.index("Vocabulary") < headings.index("Corrected text")
+
         app.radio[0].set_value("Check my own writing")
         app.run()
+        assert app.text_area[0].value == "She go to school every day."
         app = submit(app, "She go to school every day.")
         assert not app.exception
         assert app.session_state["use_case"] == "Check my own writing"
+        headings = [item.value for item in app.subheader]
+        assert headings.index("Corrected text") < headings.index("Vocabulary")
 
 
 def test_refusal_is_explained_not_shown_as_a_crash():
@@ -251,7 +263,19 @@ def test_offline_demo_is_labelled_and_does_not_call_provider(monkeypatch):
     with patch("analyzer.OpenAI") as client:
         app = launch()
         assert any("OFFLINE DEMO MODE" in item.value for item in app.warning)
-        app = submit(app, "She go to school every day.")
+        assert app.text_area[0].disabled and not app.selectbox
+        reading_sample = "I like reading a short paragraph before breakfast."
+        assert app.text_area[0].value == reading_sample
+        app.button[0].click().run()
+        assert not app.exception
+        assert app.session_state["analysis"]["original_text"] == reading_sample
+        assert "no grammar mistakes" in app.success[0].value
+
+        app.radio[0].set_value("Check my own writing")
+        app.run()
+        assert app.text_area[0].value == "She go to school every day."
+        assert all(item.value != "Your reading guide" for item in app.header)
+        app.button[0].click().run()
         assert not app.exception
         assert "She goes to school every day." in [item.value for item in app.text]
         assert "school — a place where children go to learn" in [item.value for item in app.text]

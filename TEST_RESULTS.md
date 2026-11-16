@@ -2,7 +2,7 @@
 
 Command: `python -m pytest -q -p no:cacheprovider`
 
-Final run (14 November 2026, Python 3.14.7, Streamlit 1.66.1, pytest 9.1.1):
+Final run (16 November 2026, Python 3.14.7, Streamlit 1.66.1, pytest 9.1.1):
 **42 passed, 1 skipped**. All default checks are offline. The live backend
 smoke test is opt-in and skipped. No real model call was made during this
 verification run. Earlier midterm run: 37 passed, 1 skipped.
@@ -22,7 +22,7 @@ input refusals, and the labelled offline demo mode.
 | Vocabulary returned by backend | Each `word — meaning` pair rendered literally |
 | CEFR returned by backend | Level metric, note and "not an official CEFR assessment" disclaimer displayed |
 | Optional CEFR level selected | `cefr_level` forwarded to `analyze_text()` and verified by test |
-| Both use cases | Selected use case stored with the result; guidance and emphasis change |
+| Both use cases | Selected task stored with the result. Reading prioritises vocabulary and writing prioritises corrections |
 | Long paragraph | Text and results displayed without UI exceptions |
 | Character limit | Streamlit limits input to 1,000 characters |
 | HTML-like text | Original and corrected wording rendered literally; diff markup escapes all untrusted text |
@@ -31,7 +31,11 @@ input refusals, and the labelled offline demo mode.
 | Missing key | Setup error displayed |
 | Malformed model JSON | Backend failure displayed |
 | Provider 401 / 403 / 404 / 429, connection and timeout errors | Actionable messages shown without raw diagnostics or simulated secret |
-| Offline demo mode | Persistent "not a live AI model result" banner; provider not called |
+| Offline demo mode | Each task shows a fixed input and an explicit offline banner. Switching tasks hides the previous example feedback. No provider request is made |
+
+The [local browser walkthrough](docs/evidence/USABILITY_EVIDENCE.md) also
+records both examples, an invalid input warning and a missing configuration
+message.
 
 Simulated responses establish interface/backend integration; they do not
 measure actual AI accuracy.
@@ -54,7 +58,8 @@ output, simulated responses or the walkthrough rows below as live inference.
 
 The following rows were recorded in this file during the midterm submission.
 Their live status is disputed: the same file's midterm "Live integration
-status" section and `PERSON2_NOTES.md` state that live analysis was blocked by
+status" section and the [frontend handoff](FRONTEND_AND_WEBPAGE_HANDOFF.md)
+state that live analysis was blocked by
 `AccessDenied.Unpurchased`. They are reproduced here as recorded observations,
 not as independently verified live model runs, and need re-running once model
 access is enabled.
@@ -72,9 +77,8 @@ access is enabled.
 
 ## Scope and attribution
 
-Person 2 added the Streamlit UI, offline UI integration tests, the public
-webpage, interface screenshots, usability evidence and this documentation.
-`analyzer.py`, `test_backend.py`, `conftest.py`, `INTEGRATION.md` and the
-configuration templates are owned by other members and were not modified by
-Person 2. No CEFR reference dataset or additional language support has been
-added. The private `.env` and local delivery archives are excluded from Git.
+The frontend contribution covers the Streamlit UI, offline integration tests,
+project webpage, interface screenshots and usability evidence. The test
+fixtures retain non-Latin input coverage through escaped characters. The CEFR
+estimate comes from the model. The private `.env` and local delivery archives
+are excluded from Git.

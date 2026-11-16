@@ -1,336 +1,171 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>English Grammar Assistant · AILT9019 Team 26</title>
-<meta name="description" content="An English grammar learning assistant built by AILT9019 Team 26: corrected text, plain-English explanations, vocabulary and CEFR-referenced feedback.">
-<style>
-:root{
-  --bg:#ffffff; --surface:#f7f8fa; --ink:#1c2430; --muted:#5c6675;
-  --line:#e2e6ec; --accent:#185FA5; --accent-soft:#E6F1FB;
-  --warn:#854F0B; --warn-soft:#FAEEDA; --ok:#0F6E56; --ok-soft:#E1F5EE;
-  --danger:#A32D2D; --danger-soft:#FCEBEB;
-  --radius:12px; --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
-}
-*{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{margin:0;background:var(--bg);color:var(--ink);
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
-  font-size:16px;line-height:1.65}
-a{color:var(--accent);text-decoration:none}
-a:hover{text-decoration:underline}
-.skip{position:absolute;left:-9999px}
-.skip:focus{left:12px;top:12px;background:#fff;padding:8px 12px;border:2px solid var(--accent);z-index:99}
-header.hero{background:var(--accent-soft);border-bottom:1px solid var(--line);padding:44px 24px 34px}
-.wrap{max-width:980px;margin:0 auto}
-.eyebrow{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);font-weight:600;margin:0 0 10px}
-h1{font-size:34px;line-height:1.2;margin:0 0 10px;font-weight:650}
-h2{font-size:23px;margin:0 0 14px;font-weight:650;letter-spacing:-.01em}
-h3{font-size:17px;margin:22px 0 8px;font-weight:650}
-p{margin:0 0 14px}
-.lead{font-size:18px;color:var(--muted);max-width:760px}
-.meta{margin-top:18px;display:flex;flex-wrap:wrap;gap:10px}
-.pill{display:inline-block;background:#fff;border:1px solid var(--line);border-radius:999px;
-  padding:5px 12px;font-size:13px;color:var(--muted)}
-.pill.strong{border-color:var(--accent);color:var(--accent);font-weight:600}
-nav{position:sticky;top:0;z-index:10;background:rgba(255,255,255,.96);
-  border-bottom:1px solid var(--line);backdrop-filter:blur(6px)}
-nav .wrap{display:flex;gap:6px;flex-wrap:wrap;padding:10px 24px}
-nav a{font-size:13px;color:var(--muted);padding:5px 9px;border-radius:7px}
-nav a:hover{background:var(--surface);color:var(--accent);text-decoration:none}
-main{padding:12px 24px 60px}
-section{padding:34px 0;border-bottom:1px solid var(--line)}
-section:last-child{border-bottom:none}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin:18px 0}
-.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:18px 20px}
-.card h3{margin-top:0}
-.card p:last-child{margin-bottom:0}
-.notice{border-left:4px solid var(--warn);background:var(--warn-soft);color:#5c3a05;
-  padding:14px 18px;border-radius:0 var(--radius) var(--radius) 0;margin:18px 0}
-.notice strong{color:#4a2f04}
-.good{border-left-color:var(--ok);background:var(--ok-soft);color:#0b4b3b}
-table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14.5px}
-th,td{text-align:left;padding:10px 12px;border:1px solid var(--line);vertical-align:top}
-th{background:var(--surface);font-weight:650}
-td code,li code,p code{font-family:var(--mono);font-size:.9em;background:var(--surface);
-  padding:1px 5px;border-radius:4px;border:1px solid var(--line)}
-pre{background:#1e2733;color:#f2f5f8;padding:16px 18px;border-radius:var(--radius);
-  overflow-x:auto;font-family:var(--mono);font-size:13.5px;line-height:1.6;margin:14px 0}
-pre code{background:none;border:none;padding:0;color:inherit;font-size:inherit}
-ul,ol{margin:0 0 14px;padding-left:22px}
-li{margin:5px 0}
-.tag{display:inline-block;font-size:12px;padding:2px 8px;border-radius:999px;font-weight:600}
-.tag.live{background:var(--danger-soft);color:var(--danger)}
-.tag.offline{background:var(--accent-soft);color:var(--accent)}
-.tag.done{background:var(--ok-soft);color:var(--ok)}
-.figure{margin:18px 0;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:#fff}
-.figure img{display:block;width:100%;height:auto}
-.figure figcaption{font-size:13.5px;color:var(--muted);padding:10px 14px;border-top:1px solid var(--line);background:var(--surface)}
-.diagram{width:100%;height:auto;display:block;margin:8px 0}
-.small{font-size:13.5px;color:var(--muted)}
-footer{background:var(--surface);border-top:1px solid var(--line);padding:26px 24px;font-size:14px;color:var(--muted)}
-@media(max-width:640px){h1{font-size:27px}header.hero{padding:32px 18px}main,nav .wrap{padding-left:18px;padding-right:18px}}
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>English Grammar Assistant · AILT9019 Team 26</title>
+  <meta name="description" content="A learning tool for understanding short English texts and revising your own writing. Explore Team 26's workflow, examples, evaluation and setup.">
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #182638;
+      --muted: #465a70;
+      --accent: #154a87;
+      --line: #cad7e4;
+      --soft: #edf4fa;
+      --paper: #f9fbfd;
+      --navy: #112b45;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font: 1rem/1.6 "Avenir Next", system-ui, sans-serif;
+    }
+    h1, h2, h3 { margin: 0 0 .6rem; line-height: 1.2; }
+    h1 { font-size: clamp(2.2rem, 6vw, 4.15rem); letter-spacing: -.035em; }
+    h2 { font-size: clamp(1.5rem, 4vw, 2.05rem); letter-spacing: -.028em; }
+    h3 { font-size: 1.12rem; }
+    p { margin: 0 0 .9rem; }
+    a { color: var(--accent); text-underline-offset: .2em; }
+    :focus-visible { outline: 3px solid #ba601c; outline-offset: 4px; }
+    .wrap { width: min(68rem, calc(100% - 2.5rem)); margin: auto; }
+    .skip { position: absolute; left: 1rem; top: .5rem; transform: translateY(-200%); padding: .5rem; background: white; }
+    .skip:focus { transform: translateY(0); z-index: 2; }
+    header { background: var(--navy); color: #fff; padding: clamp(2rem, 7vw, 5rem) 0; }
+    .course { color: #b9d7f5; margin-bottom: .8rem; }
+    .intro { max-width: 40rem; color: #edf5ff; font-size: 1.15rem; }
+    .actions { display: flex; flex-wrap: wrap; gap: .55rem 1rem; align-items: center; }
+    .actions a { color: #fff; }
+    .actions .primary { display: inline-block; background: #fff; color: var(--navy); padding: .55rem .85rem; border-radius: .45rem; font-weight: 650; }
+    nav { background: #fff; border-bottom: 1px solid var(--line); }
+    nav .wrap { display: flex; flex-wrap: wrap; gap: .35rem 1.15rem; padding: .7rem 0; }
+    section { padding: 2rem 0; border-bottom: 1px solid var(--line); }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr)); gap: 1rem; }
+    .panel, figure { background: #fff; border: 1px solid var(--line); border-radius: .65rem; }
+    .panel { padding: 1rem; }
+    .panel p:last-child, .panel dd:last-child { margin-bottom: 0; }
+    .note { background: var(--soft); border-left: 4px solid var(--accent); padding: .75rem .9rem; margin: 1rem 0; }
+    .muted, figcaption { color: var(--muted); }
+    .steps { padding-left: 1.4rem; }
+    li + li { margin-top: .4rem; }
+    pre { background: #eaf1f8; padding: .9rem; border-radius: .45rem; overflow: auto; }
+    code { overflow-wrap: anywhere; }
+    pre code { overflow-wrap: normal; }
+    dl { margin: 0; }
+    dt { margin-top: .7rem; font-weight: 650; }
+    dd { margin: 0 0 .5rem; }
+    .grid figure { margin: 0; overflow: hidden; }
+    figure img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; object-position: center 58%; display: block; border-bottom: 1px solid var(--line); }
+    figcaption { padding: .65rem .9rem; font-size: .93rem; }
+    footer { padding: 1.2rem 0 2rem; color: var(--muted); }
+  </style>
 </head>
 <body>
-<a class="skip" href="#main">Skip to content</a>
-
-<header class="hero">
-  <div class="wrap">
-    <p class="eyebrow">AILT9019 · AI Literacy II · Team 26</p>
-    <h1>English Grammar Assistant</h1>
-    <p class="lead">A short-text learning tool for self-directed English learners. Paste a sentence and get a corrected version, plain-English grammar explanations, useful vocabulary and an approximate CEFR difficulty level.</p>
-    <div class="meta">
-      <span class="pill strong">Public project webpage</span>
-      <span class="pill">Repository: <a href="https://github.com/Rtbge/AILT9019_Project">Rtbge/AILT9019_Project</a></span>
-      <span class="pill">Built with Streamlit + an OpenAI-compatible model endpoint</span>
-      <span class="pill">Last updated: 14 November 2026</span>
+  <a class="skip" href="#main">Skip to content</a>
+  <header>
+    <div class="wrap">
+      <p class="course">AILT9019 · Team 26</p>
+      <h1>English Grammar Assistant</h1>
+      <p class="intro">Understand the English you read and learn why a correction helps when you write.</p>
+      <div class="actions">
+        <a class="primary" href="#run">Run the app</a>
+        <a href="https://github.com/Rtbge/AILT9019_Project">View the GitHub repository</a>
+      </div>
     </div>
-  </div>
-</header>
-
-<nav aria-label="Section navigation">
-  <div class="wrap">
-    <a href="#users">Who it is for</a>
-    <a href="#workflow">Workflow</a>
-    <a href="#usecases">Two use cases</a>
-    <a href="#built">What we built</a>
-    <a href="#customisation">Customisation</a>
-    <a href="#run">Run it</a>
-    <a href="#example">Example</a>
-    <a href="#evaluation">Results</a>
-    <a href="#failures">Failure cases</a>
-    <a href="#limitations">Limitations</a>
-    <a href="#screenshots">Screenshots</a>
-    <a href="#evidence">Evidence</a>
-  </div>
-</nav>
-
-<main id="main" class="wrap">
-
-<div class="notice">
-  <strong>Evidence status — please read.</strong> A live model call on 14 November 2026 returned HTTP 403 <code>AccessDenied.Unpurchased</code> ("Access to model denied"). Successful live end-to-end AI inference is therefore <strong>unverified</strong> at the time of writing. This page labels every result by its provenance: automated offline checks, recorded midterm walkthroughs, or a clearly marked offline demo. Nothing here claims an unperformed live run.
-</div>
-
-<section id="users">
-  <h2>1 · Who it is for and what problem it solves</h2>
-  <div class="grid">
-    <div class="card">
-      <h3>Target users</h3>
-      <p>Independent learners working towards basic everyday communication and reading, who want to understand <em>why</em> a sentence is wrong rather than just see a replacement. The interface assumes no coding background and no knowledge of grammatical terminology.</p>
+  </header>
+  <nav aria-label="Project page">
+    <div class="wrap">
+      <a href="#uses">Who it helps</a>
+      <a href="#workflow">Workflow</a>
+      <a href="#examples">Examples</a>
+      <a href="#evaluation">Results and limits</a>
+      <a href="#run">Setup</a>
     </div>
-    <div class="card">
-      <h3>The problem</h3>
-      <p>Generic correction tools often return a fixed sentence with no explanation, use technical metalanguage, or ignore vocabulary and text difficulty altogether. Learners then cannot tell which rule to study next, or whether a text is appropriate for their level.</p>
-    </div>
-    <div class="card">
-      <h3>Who / what it is not for</h3>
-      <p>Not an exam-scoring tool, not an official CEFR assessment, not a full translation service, and not a substitute for a teacher. It handles short English texts only (up to 1,000 characters); it does not support other languages or long documents.</p>
-    </div>
-  </div>
-  <p class="small">Scope compared with the proposal: the revised proposal described short-text analysis with CEFR-referenced feedback, vocabulary and grammar explanations, two task types, and explained refusals. The final system keeps that scope, narrowed to English only. Music-playlist personalisation and multi-language support from the earliest draft are not implemented.</p>
-</section>
-
-<section id="workflow">
-  <h2>2 · Workflow: input → processing → output</h2>
-  <svg class="diagram" viewBox="0 0 900 190" role="img" aria-label="Pipeline: user input, validation, model analysis, structured output, learning feedback">
-    <title>Application pipeline</title>
-    <desc>User input is validated, analysed by the model through a structured JSON prompt, then rendered as learning feedback in the Streamlit interface.</desc>
-    <defs>
-      <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-        <path d="M2 1L8 5L2 9" fill="none" stroke="#185FA5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-      </marker>
-    </defs>
-    <rect x="6" y="42" width="158" height="86" rx="10" fill="#E6F1FB" stroke="#185FA5" stroke-width="1"/>
-    <text x="85" y="72" text-anchor="middle" font-size="14" font-weight="600" fill="#0C447C">User input</text>
-    <text x="85" y="92" text-anchor="middle" font-size="12" fill="#185FA5">short English text</text>
-    <text x="85" y="110" text-anchor="middle" font-size="12" fill="#185FA5">optional CEFR level</text>
-    <line x1="168" y1="85" x2="196" y2="85" stroke="#185FA5" stroke-width="1.5" marker-end="url(#arrow)"/>
-    <rect x="200" y="42" width="158" height="86" rx="10" fill="#FAEEDA" stroke="#BA7517" stroke-width="1"/>
-    <text x="279" y="72" text-anchor="middle" font-size="14" font-weight="600" fill="#633806">Validation</text>
-    <text x="279" y="92" text-anchor="middle" font-size="12" fill="#854F0B">length · English script</text>
-    <text x="279" y="110" text-anchor="middle" font-size="12" fill="#854F0B">refuse + explain</text>
-    <line x1="362" y1="85" x2="390" y2="85" stroke="#185FA5" stroke-width="1.5" marker-end="url(#arrow)"/>
-    <rect x="394" y="42" width="158" height="86" rx="10" fill="#EEEDFE" stroke="#534AB7" stroke-width="1"/>
-    <text x="473" y="72" text-anchor="middle" font-size="14" font-weight="600" fill="#3C3489">Model analysis</text>
-    <text x="473" y="92" text-anchor="middle" font-size="12" fill="#534AB7">structured JSON</text>
-    <text x="473" y="110" text-anchor="middle" font-size="12" fill="#534AB7">learner-level prompt</text>
-    <line x1="556" y1="85" x2="584" y2="85" stroke="#185FA5" stroke-width="1.5" marker-end="url(#arrow)"/>
-    <rect x="588" y="42" width="152" height="86" rx="10" fill="#E1F5EE" stroke="#0F6E56" stroke-width="1"/>
-    <text x="664" y="72" text-anchor="middle" font-size="14" font-weight="600" fill="#085041">Normalised result</text>
-    <text x="664" y="92" text-anchor="middle" font-size="12" fill="#0F6E56">corrections · vocab</text>
-    <text x="664" y="110" text-anchor="middle" font-size="12" fill="#0F6E56">CEFR + disclaimer</text>
-    <line x1="744" y1="85" x2="772" y2="85" stroke="#185FA5" stroke-width="1.5" marker-end="url(#arrow)"/>
-    <rect x="776" y="42" width="118" height="86" rx="10" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="1"/>
-    <text x="835" y="72" text-anchor="middle" font-size="14" font-weight="600" fill="#2C2C2A">Learning</text>
-    <text x="835" y="92" text-anchor="middle" font-size="12" fill="#5F5E5A">Streamlit UI</text>
-    <text x="835" y="110" text-anchor="middle" font-size="12" fill="#5F5E5A">screenshots</text>
-    <text x="450" y="164" text-anchor="middle" font-size="12" fill="#5c6675">Invalid or unavailable input stops early and shows an explained refusal or readable error.</text>
-  </svg>
-  <table>
-    <tr><th style="width:22%">Stage</th><th>What happens</th><th style="width:30%">Where it lives</th></tr>
-    <tr><td>Input</td><td>One English sentence or short paragraph, 1–1,000 characters, plus an optional CEFR level (A1–C2) and a chosen use case.</td><td><code>app.py</code> form</td></tr>
-    <tr><td>Validation</td><td>Empty, overly short, overly long and predominantly non-Latin text are rejected with a plain-language explanation before any provider call.</td><td><code>analyzer.py</code> + <code>app.py</code></td></tr>
-    <tr><td>Processing</td><td>A domain-specific prompt asks for a strict JSON object; the response is parsed, JSON-fence/&lt;think&gt; blocks are stripped, missing keys are normalised, and every correction is guaranteed a non-empty explanation.</td><td><code>analyzer.py</code></td></tr>
-    <tr><td>Output</td><td>Corrected text, a word-level highlighted diff, per-correction explanations, grammar notes, vocabulary, a CEFR estimate with a disclaimer, and readable error/refusal messages.</td><td><code>app.py</code> + <code>INTEGRATION.md</code></td></tr>
-  </table>
-</section>
-
-<section id="usecases">
-  <h2>3 · Two supported use cases</h2>
-  <div class="grid">
-    <div class="card">
-      <h3>Understand a text I found</h3>
-      <p>Paste a correct sentence or a short paragraph from a book, lyric or article. The results page leads with grammar notes, vocabulary and the approximate CEFR difficulty — useful even when there are no mistakes to fix.</p>
-    </div>
-    <div class="card">
-      <h3>Check my own writing</h3>
-      <p>Paste a sentence you wrote. The results page leads with the corrected version, highlights the words that changed, and explains each mistake in simple English.</p>
-    </div>
-  </div>
-  <p class="small">Both options currently call the same backend analysis path; the interface changes guidance, placeholders and the order of emphasis. This is stated honestly rather than presenting two separate model pipelines.</p>
-</section>
-
-<section id="built">
-  <h2>4 · What the team built vs what comes from existing tools</h2>
-  <table>
-    <tr><th style="width:34%">Team-built</th><th style="width:33%">Existing capability</th><th>Evidence in the repository</th></tr>
-    <tr><td>Input validation, explained refusals, safe error messages and literal text rendering</td><td>Linguistic judgement and text generation from the configured chat-completions model</td><td><code>analyzer.py</code>, <code>app.py</code>, <code>test_app.py</code></td></tr>
-    <tr><td>Structured JSON output schema and response normalisation, including malformed-JSON handling</td><td>OpenAI-compatible client SDK, python-dotenv, pytest</td><td><code>analyzer.py</code>, <code>INTEGRATION.md</code></td></tr>
-    <tr><td>Streamlit interface: two use cases, highlighted changes, vocabulary, CEFR display, level selection</td><td>Streamlit widgets and rendering</td><td><code>app.py</code>, <code>docs/screenshots/</code></td></tr>
-    <tr><td>Offline test suite, test logs, README, handoff notes and this public webpage</td><td>—</td><td><code>TEST_RESULTS.md</code>, <code>PERSON2_NOTES.md</code>, <code>docs/</code></td></tr>
-  </table>
-  <p class="small">The backend calls an OpenAI-compatible endpoint configured locally in <code>.env</code> (the shipped example uses a Qwen-family model identifier). The model and endpoint are configuration, not team-built components. No API key is stored in the repository.</p>
-</section>
-
-<section id="customisation">
-  <h2>5 · Domain customisation for language learners</h2>
-  <ul>
-    <li><strong>Beginner-friendly explanations.</strong> The system prompt requires every correction to state why the original is wrong and how to fix it, in simple English; the backend substitutes a fallback rather than showing a blank explanation.</li>
-    <li><strong>Learning-focused output instead of bare correction.</strong> The response schema adds grammar notes, vocabulary meanings and a CEFR estimate to the corrected text.</li>
-    <li><strong>Optional learner-level adaptation.</strong> The interface offers A1–C2 and forwards the choice as <code>cefr_level</code>; the prompt asks the model to tailor explanations to that level. The estimate itself is explicitly disclaimed as non-official.</li>
-    <li><strong>Refusal as a learning behaviour.</strong> Wrong-language, heavily mixed-language, empty and overlong inputs are refused with a reason rather than silently producing feedback.</li>
-    <li><strong>Safe refusal of prompt injection.</strong> User text is treated strictly as content to analyse, never as instructions; all displayed text is escaped so model or user markup cannot alter the page.</li>
-  </ul>
-  <p class="small">Design choice supported by implementation: learners need to see <em>which words changed</em>, so the frontend computes a token diff between the original and corrected text and renders it with struck-through / underlined spans. This is an approximation of the model's phrase-level <code>errors[]</code> entries, not a model-provided highlight.</p>
-</section>
-
-<section id="run">
-  <h2>6 · Run it yourself</h2>
-  <p>Python 3.10 or later. No coding experience is needed beyond running these commands in a terminal.</p>
-  <pre><code>git clone https://github.com/Rtbge/AILT9019_Project.git
+  </nav>
+  <main id="main" class="wrap">
+    <section id="uses">
+      <h2>Who it helps</h2>
+      <p>The assistant is for people learning everyday English independently. A short passage may be hard to understand even when its grammar is correct. A corrected sentence can also leave a learner unsure why the original wording changed. The app gives explanations for both situations.</p>
+      <div class="grid">
+        <div class="panel">
+          <h3>Understand a text I found</h3>
+          <p>Paste a short English passage. Grammar notes, contextual vocabulary meanings and an approximate CEFR difficulty appear before corrections.</p>
+        </div>
+        <div class="panel">
+          <h3>Check my own writing</h3>
+          <p>Paste a sentence you wrote. Start with the corrected text and highlighted changes, then read why each change was made.</p>
+        </div>
+      </div>
+      <p class="note">The current scope is short English texts for everyday communication and reading. The result supports learning. Use a qualified assessment for official proficiency decisions.</p>
+    </section>
+    <section id="workflow">
+      <h2>How the assistant works</h2>
+      <ol class="steps">
+        <li><strong>Input.</strong> Choose a task and enter up to 1,000 characters of English. Optionally choose your own A1–C2 level to guide explanation difficulty.</li>
+        <li><strong>Processing.</strong> The app and backend validate the input. The backend asks the configured chat model for structured correction, grammar, vocabulary and CEFR feedback, then parses the result.</li>
+        <li><strong>Output.</strong> The app groups the feedback by task, compares the original and corrected words, and gives a next step when input is refused or the service fails.</li>
+      </ol>
+      <p>We built the validation, tutoring prompt, response formatting and learner interface. Streamlit supplies the widgets. The configured model generates the language feedback through an OpenAI-compatible endpoint. Both tasks use the same <code>analyze_text()</code> function.</p>
+      <p><strong>Design choice.</strong> The tutoring prompt requests a short reason for each correction and a meaning for relevant vocabulary. The interface places those reasons next to the original and suggested wording. Crossed-out and underlined words distinguish the two even without colour. The learner’s chosen level guides the explanation, while the displayed CEFR estimate describes the submitted text.</p>
+    </section>
+    <section id="examples">
+      <h2>Examples from the interface</h2>
+      <p>The app’s offline demo provides these two fixed examples. The screenshots show what learners see when using the app locally.</p>
+      <div class="grid">
+        <figure>
+          <img src="screenshots/writing-correction-example.png" alt="Writing example with go crossed out, goes underlined, and a subject–verb agreement explanation" loading="lazy">
+          <figcaption><a href="screenshots/writing-correction-example.png">View the full writing example</a> · Fixed offline example</figcaption>
+        </figure>
+        <figure>
+          <img src="screenshots/reading-guide-example.png" alt="Reading example showing grammar notes, contextual vocabulary and the example CEFR level" loading="lazy">
+          <figcaption><a href="screenshots/reading-guide-example.png">View the full reading example</a> · Fixed offline example</figcaption>
+        </figure>
+      </div>
+      <dl class="note">
+        <dt>Writing example</dt>
+        <dd><q>She go to school every day.</q> becomes <q>She goes to school every day.</q> In the present simple, a verb used with <em>she</em> usually takes <em>-s</em> or <em>-es</em>.</dd>
+        <dt>Reading example</dt>
+        <dd><q>I like reading a short paragraph before breakfast.</q> illustrates the <em>-ing</em> form after <em>like</em> and explains what <em>paragraph</em> means.</dd>
+      </dl>
+    </section>
+    <section id="evaluation">
+      <h2>Results, failure cases and limits</h2>
+      <div class="grid">
+        <div class="panel">
+          <h3>Software checks</h3>
+          <p><strong>42 passed, 1 skipped</strong> in the offline suite. The checks exercise the interface and backend with simulated model responses, including both task layouts, corrections, vocabulary, CEFR, invalid input and service errors. See the <a href="https://github.com/Rtbge/AILT9019_Project/blob/main/TEST_RESULTS.md">test record</a>.</p>
+        </div>
+        <div class="panel">
+          <h3>Educational evaluation</h3>
+          <p>The proposal set a 90% correctness target for a fixed set of 30–50 examples spanning correction, explanation, vocabulary and unsuitable inputs. A measured accuracy score and successful live generation are pending verification. A live request on 14 November 2026 returned HTTP 403 because model access was denied.</p>
+        </div>
+      </div>
+      <h3 style="margin-top: 1.3rem">Observed input warning</h3>
+      <p>We submitted <code>12345</code> in the standard interface. The app asked for an English sentence containing words before contacting a model. <a href="screenshots/invalid-input-warning.png">View the input warning</a>.</p>
+      <ul>
+        <li>Language screening uses character scripts. It catches predominantly non-Latin text but can accept non-English languages written with Latin letters.</li>
+        <li>The CEFR output is an approximate model estimate. This version uses no fixed CEFR reference dataset. AI corrections and vocabulary meanings can be wrong.</li>
+        <li>Highlighted changes come from a word comparison and can differ from the model’s phrase-level error descriptions.</li>
+        <li>Live analysis sends the text to the configured endpoint. Avoid entering personal or confidential information. The interface retains results in its current session.</li>
+      </ul>
+    </section>
+    <section id="run">
+      <h2>Run the app locally</h2>
+      <p>Use Python 3.10 or later. These setup commands are for macOS and Linux. See the <a href="https://github.com/Rtbge/AILT9019_Project/blob/main/README.md">repository README</a> for configuration and troubleshooting.</p>
+      <pre tabindex="0" aria-label="Setup commands"><code>git clone https://github.com/Rtbge/AILT9019_Project.git
 cd AILT9019_Project
 python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install -r requirements.txt
-cp .env.example .env          # add YOUR OWN provider settings
-python -m streamlit run app.py</code></pre>
-  <p>Open the local address printed in the terminal (usually <code>http://localhost:8501</code>). To check the offline test suite, run <code>python -m pytest -q</code>. For an opt-in live smoke test, run <code>python -m pytest test_backend.py -v --run-live</code> once model access is enabled.</p>
-  <p><strong>If the provider is unavailable</strong>, the interface can be demonstrated with a clearly labelled offline sample: <code>AILT9019_OFFLINE_DEMO=1 python -m streamlit run app.py</code>. A persistent banner states that the output is a fixed sample, not a live AI result.</p>
-  <p>Repository: <a href="https://github.com/Rtbge/AILT9019_Project">github.com/Rtbge/AILT9019_Project</a> · Integration contract: <code>INTEGRATION.md</code> · Full setup notes: <code>README.md</code>.</p>
-</section>
-
-<section id="example">
-  <h2>7 · Worked example</h2>
-  <p><span class="tag offline">Offline fixture</span> The following is the deterministic sample response used by the offline demo and by the offline integration tests. It is a genuine run of the application, but <strong>not</strong> a live model result.</p>
-  <table>
-    <tr><th style="width:24%">Field</th><th>Value</th></tr>
-    <tr><td>Input</td><td><code>She go to school every day.</code></td></tr>
-    <tr><td>Corrected text</td><td><code>She goes to school every day.</code></td></tr>
-    <tr><td>Correction</td><td><code>She go</code> → <code>She goes</code></td></tr>
-    <tr><td>Explanation</td><td>With "she" (one person), a present-simple verb needs -s: "goes", not "go" (subject–verb agreement).</td></tr>
-    <tr><td>Grammar note</td><td>Present simple: he / she / it + verb with -s (goes, likes, works).</td></tr>
-    <tr><td>Vocabulary</td><td><em>every day</em> — each day, something that happens regularly; <em>school</em> — a place where children go to learn.</td></tr>
-    <tr><td>CEFR estimate</td><td>A1 · "approximate and generated by an AI model; not an official CEFR assessment."</td></tr>
-  </table>
-  <p class="small">Source: <code>app.py</code> offline sample and <code>test_backend.py</code> <code>SUBJECT_VERB_RESPONSE</code> fixture. A real model response may differ; once live access is confirmed, this table should be replaced with a saved live run.</p>
-</section>
-
-<section id="evaluation">
-  <h2>8 · Evaluation results</h2>
-  <p><strong>Evaluation question.</strong> Does the system produce correct corrections, understandable explanations and useful vocabulary for short English texts, while refusing unsuitable inputs? The revised proposal sets a success criterion of <strong>90% of 30–50 fixed examples</strong> explained correctly, with mistakes highlighted and correct versions supplied, across CEFR bands, slang, ambiguous sentences, wrong-language and mixed-language cases.</p>
-  <table>
-    <tr><th style="width:30%">Evidence</th><th style="width:18%">Result</th><th>Provenance and what it does / does not show</th></tr>
-    <tr><td>Automated offline suite</td><td><span class="tag done">42 passed, 1 skipped</span></td><td><code>python -m pytest -q -p no:cacheprovider</code>, 14 Nov 2026. Real Streamlit app + real backend + simulated provider responses. Verifies the input→output connection, validation, error handling and rendering; does <strong>not</strong> measure model accuracy.</td></tr>
-    <tr><td>Interface coverage</td><td>18 scenarios</td><td>Corrections, correct text, multiple mistakes, vocabulary, CEFR, level selection, both use cases, HTML-like text, reruns, malformed JSON, provider 401/403/404/429/timeout, offline demo. See <code>TEST_RESULTS.md</code>.</td></tr>
-    <tr><td>Recorded midterm walkthroughs</td><td>8 cases</td><td>Cases such as "Our school have a busy elevator.", "We school have an busy elevator.", Chinese text, 1,000+ characters, only numbers, nonsense text and an SQL-injection attempt. Recorded during the midterm submission; their live status is disputed because the provider returned 403. Relabelled as recorded observations, not verified live inference.</td></tr>
-    <tr><td>Live model inference</td><td><span class="tag live">Unverified</span></td><td>HTTP 403 <code>AccessDenied.Unpurchased</code> reproduced on 14 Nov 2026. The opt-in live smoke test is skipped. This is the largest open evidence gap.</td></tr>
-    <tr><td>Educational benchmark (30–50 cases, 90% target)</td><td><span class="tag offline">Pending Person 4</span></td><td>The fixed dataset, scoring rubric, CEFR reference criteria and measured accuracy are owned by Person 4 (educational evaluation). No measured figures are invented on this page. Insert the measured results here when available.</td></tr>
-  </table>
-  <div class="notice good"><strong>Honest summary.</strong> The application's core input→processing→output path, validation, error handling and frontend rendering are verified offline. Whether the AI model reaches the proposal's 90% correctness target cannot yet be stated, because live generation access is blocked and the educational benchmark has not been delivered.</div>
-</section>
-
-<section id="failures">
-  <h2>9 · Failure, boundary and refusal cases</h2>
-  <table>
-    <tr><th style="width:26%">Case</th><th style="width:30%">Expected</th><th>Observed behaviour</th></tr>
-    <tr><td>Provider model not enabled</td><td>Do not crash; tell the learner what to do.</td><td>Real call returned 403 <code>AccessDenied.Unpurchased</code>. The interface shows: "The AI provider has not enabled model access for this account. Complete Model Studio activation and any required account verification…". No raw provider diagnostics are exposed. <span class="tag live">Live failure, reproduced 14 Nov 2026</span></td></tr>
-    <tr><td>Predominantly non-Latin text, e.g. <code>这是一个测试句子</code></td><td>Refuse with an explanation, no provider call.</td><td>Backend script check rejects it; frontend shows "This text looks like it is not written mainly in English…". Verified by offline tests.</td></tr>
-    <tr><td>Empty / one-character / numbers-only / punctuation-only input</td><td>Local validation message.</td><td>Warning shown; provider not called. Verified by <code>test_invalid_inputs_do_not_call_provider</code>.</td></tr>
-    <tr><td>More than 1,000 characters</td><td>Reject or truncate before analysis.</td><td>The text area caps input at 1,000 characters; the backend also rejects overlong input. Verified by tests and recorded midterm walkthrough.</td></tr>
-    <tr><td>Malformed model JSON / missing keys</td><td>Readable error, no blank explanations.</td><td>Backend returns <code>success: False</code> with an "unreadable response" message; missing explanations are replaced by a fallback. Verified by offline tests.</td></tr>
-    <tr><td>Input that looks like SQL injection, e.g. <code>"" OR COUNT(*) NOT NULL</code></td><td>Treat as ordinary text; no instruction execution.</td><td>Recorded midterm walkthrough: treated as text, no security issue observed. The system prompt also instructs the model to treat user text strictly as content.</td></tr>
-    <tr><td>Non-English written in Latin letters, e.g. Spanish "Donde Estas?"</td><td>Should be refused as non-English.</td><td><strong>Known boundary weakness.</strong> The script-based language check cannot reliably detect Latin-script non-English text, so it may pass validation. Recorded midterm walkthrough reported a redirect to English; this needs a dedicated re-test. See Limitations.</td></tr>
-  </table>
-</section>
-
-<section id="limitations">
-  <h2>10 · Limitations and evidence-based improvements</h2>
-  <ul>
-    <li><strong>Live inference is unverified.</strong> Until the provider enables model access, no claim about real model accuracy or end-to-end live execution is supportable. Improvement: enable access, run the opt-in live smoke test, save the raw output and re-run the demo recording.</li>
-    <li><strong>Script-based language detection.</strong> Non-English text written in Latin letters can pass validation. Improvement: add a language-identification check or a model-level refusal rule, then add explicit test cases (Spanish, French, German) to the fixed dataset.</li>
-    <li><strong>CEFR is an AI estimate, not an official assessment.</strong> No fixed CEFR reference dataset is integrated in this version and the estimate is displayed with a disclaimer. Improvement: document a fixed CEFR reference and evaluate estimates against documented criteria, as planned for the educational evaluation.</li>
-    <li><strong>Word-level diff is an approximation.</strong> Highlighting is computed from a token diff, so it may not align exactly with phrase-level <code>errors[]</code>. Improvement: use character offsets if the backend later supplies them.</li>
-    <li><strong>One shared backend path for two use cases.</strong> Task-specific prompting is not yet implemented. Improvement: add an explicit task parameter and separate prompt templates, then test both paths independently.</li>
-    <li><strong>Privacy and scope.</strong> Text is sent to an external provider; the app does not save history, support other languages, or handle long documents. No personal data should be entered.</li>
-  </ul>
-</section>
-
-<section id="screenshots">
-  <h2>11 · Interface screenshots</h2>
-  <p>These images come from a real local run of <code>app.py</code>. Where the provider was unavailable, the offline demo mode is visible as a banner and the caption says so.</p>
-  <figure class="figure">
-    <img src="screenshots/01-start.png" alt="Streamlit start page showing the two use cases, input box, CEFR selector and Analyse button">
-    <figcaption>Start page: use-case choice, input guidance, optional CEFR level and privacy note.</figcaption>
-  </figure>
-  <figure class="figure">
-    <img src="screenshots/02-writing-correction.png" alt="Check my own writing result showing corrected text, highlighted word changes, explanation, vocabulary and CEFR estimate">
-    <figcaption>Check my own writing: corrected text, word-level highlighting, per-correction explanation, vocabulary and CEFR estimate. <span class="tag offline">Offline demo sample, not a live model result</span></figcaption>
-  </figure>
-  <figure class="figure">
-    <img src="screenshots/03-understand-correct.png" alt="Understand a text result showing a no-mistakes message, grammar notes, vocabulary and CEFR estimate">
-    <figcaption>Understand a text I found: an already-correct sentence still receives grammar notes, vocabulary and a CEFR estimate. <span class="tag offline">Offline demo sample, not a live model result</span></figcaption>
-  </figure>
-  <figure class="figure">
-    <img src="screenshots/04-refusal.png" alt="Explained refusal message for non-English input">
-    <figcaption>Explained refusal: predominantly non-Latin input is rejected before any provider call.</figcaption>
-  </figure>
-  <figure class="figure">
-    <img src="screenshots/05-provider-error.png" alt="Readable provider error message for AccessDenied.Unpurchased">
-    <figcaption>Service failure: the 403 model-access error is shown as an actionable message without raw diagnostics. <span class="tag live">Real provider response</span></figcaption>
-  </figure>
-</section>
-
-<section id="evidence">
-  <h2>12 · Evidence, access and AI-use note</h2>
-  <ul>
-    <li><strong>Code and tests:</strong> <a href="https://github.com/Rtbge/AILT9019_Project">github.com/Rtbge/AILT9019_Project</a> — <code>app.py</code>, <code>analyzer.py</code>, <code>test_app.py</code>, <code>test_backend.py</code>, <code>README.md</code>, <code>INTEGRATION.md</code>.</li>
-    <li><strong>Test log:</strong> <code>TEST_RESULTS.md</code>. <strong>Usability evidence:</strong> <code>docs/evidence/USABILITY_EVIDENCE.md</code>. <strong>Frontend handoff:</strong> <code>PERSON2_NOTES.md</code>.</li>
-    <li><strong>Data and privacy:</strong> the app uses no stored dataset and no credentials in the repository. Users supply their own API key in an ignored local <code>.env</code>. No personal or sensitive data is used or displayed.</li>
-    <li><strong>AI-use disclosure:</strong> an AI assistant was used to draft parts of the frontend code, tests, webpage copy and documentation; generated code was executed against the offline test suite and reviewed by the responsible team member before being retained. The full seven-field AI-use disclosure and human verification record belong to Section 5 of the final report.</li>
-    <li><strong>Accessibility:</strong> this page is static HTML with semantic headings, labelled tables, alt text, a skip link and keyboard-friendly navigation; it needs no login and loads no external assets.</li>
-  </ul>
-  <p class="small">The report, presentation video and demo video are separate deliverables linked from <code>submission_links.txt</code>; they are not embedded here. This webpage, the repository and the videos describe the same system, including the unverified live-inference status.</p>
-</section>
-
-</main>
-
-<footer>
-  <div class="wrap">
-    AILT9019 · AI Literacy II · Team 26 · English Grammar Assistant · Last updated 14 November 2026.<br>
-    Repository: <a href="https://github.com/Rtbge/AILT9019_Project">Rtbge/AILT9019_Project</a> · Feedback is for learning, not official language assessment.
-  </div>
-</footer>
+cp -n .env.example .env</code></pre>
+      <p>Set your endpoint, model and any required key in the private <code>.env</code> file. Run <code>python -m streamlit run app.py</code> and open the local URL printed in the terminal.</p>
+      <p>To try the two fixed examples without a model connection, run <code>AILT9019_OFFLINE_DEMO=1 python -m streamlit run app.py</code>. To run the automated checks, use <code>python -m pytest -q</code>.</p>
+    </section>
+  </main>
+  <footer class="wrap">
+    AILT9019 · AI Literacy II · Team 26 · <a href="https://github.com/Rtbge/AILT9019_Project">GitHub repository</a>
+  </footer>
 </body>
 </html>
