@@ -137,6 +137,17 @@ def _check_english(text: str) -> str | None:
     if len(words) < 5:
         return None
 
+    # Repeated short English sentences can confuse statistical detectors.
+    # Inspect a representative short sentence instead of the repeated block.
+    segments = [part.strip() for part in re.split(r"[.!?]+", text) if part.strip()]
+    if len(segments) >= 3 and len(set(segments)) == 1:
+        sample_words = re.findall(r"[A-Za-z]+(?:'[A-Za-z]+)?", segments[0])
+        if len(sample_words) < 5 and any(
+            word.lower() in {"i", "you", "we", "they", "he", "she", "it", "the", "a", "an"}
+            for word in sample_words
+        ):
+            return None
+
     try:
         predictions = detect_langs(text)
     except LangDetectException:
@@ -562,7 +573,13 @@ def analyze_text(text: str, cefr_level: str | None = None) -> dict[str, Any]:
 
 
     # ---- Build result ----------------------------------------------------
-    independent_cefr = _estimate_cefr_independently(client, cleaned)
+    # One provider call by default, matching the frontend integration contract.
+    # An optional independent second pass is available for deeper evaluation.
+    independent_cefr = (
+        _estimate_cefr_independently(client, cleaned)
+        if os.getenv("AILT9019_INDEPENDENT_CEFR", "0") == "1"
+        else None
+    )
     # Preserve a valid estimate from the primary response if the second
     # request fails or returns an unexpected format (including mocked tests).
     final_cefr = independent_cefr or validated["cefr_estimate"]

@@ -101,6 +101,8 @@ OFFLINE_SAMPLE_CORRECT = {
 
 def friendly_error(message: str) -> str:
     """Explain known provider failures without displaying raw API diagnostics."""
+    if message.startswith("API call failed."):
+        return "The AI service could not complete the request. Please try again later or check the API configuration."
     if not message.startswith("API call failed:"):
         return message
     if "AccessDenied.Unpurchased" in message:
