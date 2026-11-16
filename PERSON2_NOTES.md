@@ -130,6 +130,3 @@ fields (tools/models, tasks supported, representative prompts, outputs
 retained, verification performed, known limitations, responsible members),
 together with the human checks listed in Section 4 above.
 
-## 可直接发给组员的贡献说明
-
-我完成了 Person 2 的最终前端与公开网页：app.py 现在支持两种使用场景（分析已有文本／纠正自己的写作）、纠错文本与逐词高亮、语法解释、词汇解释、CEFR 估计与免责声明、可选 CEFR 等级、加载提示、输入引导与拒答说明，并加入明确标注的离线演示模式以便在没有模型权限时做界面演示。公开网页放在 docs/index.html，可由 GitHub Pages 发布；截图与首次使用走查证据放在 docs/。离线测试 42 项通过、1 项跳过。真实模型调用仍被 403 AccessDenied.Unpurchased 拒绝，因此所有材料都不得声称已完成真实端到端推理。报告 PDF 与两段视频本轮未制作。
