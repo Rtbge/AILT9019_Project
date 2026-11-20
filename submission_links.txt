@@ -1,0 +1,11 @@
+Webpage:
+https://rtbge.github.io/AILT9019_Project/
+
+Repository:
+https://github.com/Rtbge/AILT9019_Project/tree/main
+
+Presentation:
+https://youtu.be/3tg5S9c9zUY
+
+Demo:
+https://youtu.be/Cz5Lc15di1g
